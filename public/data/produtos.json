@@ -1,0 +1,153 @@
+[
+  {
+    "nome": "Pão sarraceno biológico 500g",
+    "Preco": 3.45,
+    "image_url": "https://res.cloudinary.com/sergio-paulo-neves/image/upload/v1632437935/paes/pao-sarraceno_oogjc8.jpg",
+    "tipo": "pao"
+  },
+  {
+    "nome": "Bola de malte 100gr 3 Uds.",
+    "Preco": 1.30,
+    "image_url": "https://res.cloudinary.com/sergio-paulo-neves/image/upload/v1632437934/paes/pao-malte_dnpq14.jpg",
+    "tipo": "pao"
+  },
+  {
+    "nome": "Gran reserva centeio 350gr",
+    "Preco": 1.99,
+    "image_url": "https://res.cloudinary.com/sergio-paulo-neves/image/upload/v1632437935/paes/reserva-centeio_shdpfm.jpg",
+    "tipo": "pao"
+  },
+  {
+    "nome": "Bola lenha 110gr",
+    "Preco": 1.30,
+    "image_url": "https://res.cloudinary.com/sergio-paulo-neves/image/upload/v1632437933/paes/bola-lenha_pihxcr.jpg",
+    "tipo": "pao"
+  },
+  {
+    "nome": "Pão 6 cereais 250gr",
+    "Preco": 1.70,
+    "image_url": "https://res.cloudinary.com/sergio-paulo-neves/image/upload/v1632437933/paes/6-cereais_odnmum.jpg",
+    "tipo": "pao"
+  },
+  {
+    "nome": "Broa milho 400gr",
+    "Preco": 1.85,
+    "image_url": "https://res.cloudinary.com/sergio-paulo-neves/image/upload/v1632437933/paes/broa-milho_qiu7qr.jpg",
+    "tipo": "pao"
+  },
+  {
+    "nome": "Pão de mafra 450gr",
+    "Preco": 2.10,
+    "image_url": "https://res.cloudinary.com/sergio-paulo-neves/image/upload/v1632437934/paes/pao-mafra_uihtpm.jpg",
+    "tipo": "pao"
+  },
+  {
+    "nome": "Pão c/ chouriço 1 Ud.",
+    "Preco": 1.25,
+    "image_url": "https://res.cloudinary.com/sergio-paulo-neves/image/upload/v1632437934/paes/pao-chourico_dye3iy.jpg",
+    "tipo": "pao"
+  },
+  {
+    "nome": "Bretzel amêndoa 1 Ud.",
+    "Preco": 1.50,
+    "image_url": "https://res.cloudinary.com/sergio-paulo-neves/image/upload/v1632437933/paes/bretzel-amendoa_ttdrny.jpg",
+    "tipo": "pao"
+  },
+  {
+    "nome": "Pão sem glutén 100gr",
+    "Preco": 2.20,
+    "image_url": "https://res.cloudinary.com/sergio-paulo-neves/image/upload/v1632437935/paes/pao-sem-gluten-simples_nf18ho.jpg",
+    "tipo": "pao"
+  },
+  {
+    "nome": "Pastel de nata 3 Uds.",
+    "Preco": 2.75,
+    "image_url": "https://res.cloudinary.com/sergio-paulo-neves/image/upload/v1632437935/paes/pastel-de-nata_p0rov0.jpg",
+    "tipo": "pao"
+  },
+  {
+    "nome": "Carcaça de lenha 3 Uds.",
+    "Preco": 1.30,
+    "image_url": "https://res.cloudinary.com/sergio-paulo-neves/image/upload/v1632437933/paes/carcaca-lenha_ihhvfa.jpg",
+    "tipo": "pao"
+  },
+  {
+    "nome": "Croissant paris 2 Uds.",
+    "Preco": 2.20,
+    "image_url": "https://res.cloudinary.com/sergio-paulo-neves/image/upload/v1632437934/paes/croissant-paris_ctmknq.jpg",
+    "tipo": "pao"
+  },
+  {
+    "nome": "Donuts galcé 3 Uds.",
+    "Preco": 2.80,
+    "image_url": "https://res.cloudinary.com/sergio-paulo-neves/image/upload/v1632437934/paes/donuts_of7yrx.jpg",
+    "tipo": "pao"
+  },
+  {
+    "nome": "Pão de alfarroba 80gr 3 Uds.",
+    "Preco": 1.40,
+    "image_url": "https://res.cloudinary.com/sergio-paulo-neves/image/upload/v1632437934/paes/pao-alfarroba_l8p9ku.jpg",
+    "tipo": "pao"
+  },
+  {
+    "nome": "Muffin vegan com pepitas de chocolate 90gr 1 Ud.",
+    "Preco": 1.50,
+    "image_url": "https://res.cloudinary.com/sergio-paulo-neves/image/upload/v1632437934/paes/muffin_j24nof.jpg",
+    "tipo": "pao"
+  },
+  {
+    "nome": "Muffin red velvet",
+    "Preco": 1.95,
+    "image_url": "https://res.cloudinary.com/sergio-paulo-neves/image/upload/v1632437934/paes/muffin-red-velvet_pjfmx8.jpg",
+    "tipo": "pao"
+  },
+  {
+    "nome": "Pão de deus 110gr",
+    "Preco": 1.15,
+    "image_url": "https://res.cloudinary.com/sergio-paulo-neves/image/upload/v1632437934/paes/pao-deus_nt24dm.jpg",
+    "tipo": "pao"
+  },
+  {
+    "nome": "Pão obrador biológico elaborado com massa mãe 500gr",
+    "Preco": 3.10,
+    "image_url": "https://res.cloudinary.com/sergio-paulo-neves/image/upload/v1632437934/paes/pao-deus_nt24dm.jpg",
+    "tipo": "pao"
+  },
+  {
+    "nome": "Pão de forma fatiado pequeno",
+    "Preco": 2.20,
+    "image_url": "https://res.cloudinary.com/sergio-paulo-neves/image/upload/v1632437934/paes/pao-forma-fatiado_bdkopn.jpg",
+    "tipo": "pao"
+  },
+  {
+    "nome": "Broa de milho c/ chouriço",
+    "Preco": 2.80,
+    "image_url": "https://res.cloudinary.com/sergio-paulo-neves/image/upload/v1632437934/paes/pao-forma-fatiado_bdkopn.jpg",
+    "tipo": "pao"
+  },
+  {
+    "nome": "Croissant brioche simples artesanal 1 Ud.",
+    "Preco": 1.25,
+    "image_url": "https://res.cloudinary.com/sergio-paulo-neves/image/upload/v1632437933/paes/croissant-brioche-simples_s1mype.jpg",
+    "tipo": "pao"
+  },
+  {
+    "nome": "Croissant brioche c/ creme artesanal 1 Ud.",
+    "Preco": 1.25,
+    "image_url": "https://res.cloudinary.com/sergio-paulo-neves/image/upload/v1632437933/paes/croissant-brioche-creme_nsvwmx.jpg",
+    "tipo": "pao"
+  },
+  {
+    "nome": "Croissant brioche c/ cacau e avelãs 1 Ud.",
+    "Preco": 1.25,
+    "image_url": "https://res.cloudinary.com/sergio-paulo-neves/image/upload/v1632437933/paes/croissant-brioche-cacau_ayd5kc.jpg",
+    "tipo": "pao"
+  }
+
+
+
+
+
+
+
+]

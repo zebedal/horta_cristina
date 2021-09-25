@@ -1,3 +1,12 @@
 h1 {
   font-size: 25px !important;
 }
+.ant-table-cell, .ant-input {
+  color: #7a7a7a !important;
+}
+.ant-btn-dangerous {
+  background: red !important;
+}
+.ant-btn-dangerous path{
+  fill: white;
+}
