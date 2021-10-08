@@ -6,32 +6,35 @@ import axios from 'axios';
 import React, {useEffect} from 'react'
 import {uploadImageCloudinary} from '../../lib/utils'
 
-const TableContent = ({ data, title, categorias }) => {
+const { Search } = Input;
 
-   
 
-    const [tableData, setTableData] = useState(data)  
+const TableContent = ({ dados, title, filtro}) => {
+
+    
+    const parsedProducts = JSON.parse(dados)
+    const defaultProducts = parsedProducts.filter(prod => prod.tipo === filtro)
+    const categories = [...new Set(parsedProducts.map(prod => prod.tipo))]
+
+
+    const [tableData, setTableData] = useState(defaultProducts) 
+    const [filteredData, setFilteredData] = useState(defaultProducts)   
     const [isModalVisible, setIsModalVisible] = useState(false)
     const [isCreateModalVisible, setIsCreateModalVisible] = useState(false)
     const [selectedRowData, setSelectedRowData] = useState({})
     const [selectedImage, setSelectedImage] = useState([])
     const [loadingData, setLoadingData] = useState(false)
     const [deleteLoadingData, setDeleteLoadingData] = useState(false)
-    const [currentPage, setCurrentPage] = useState(1)
+    const [current, setCurrent] = useState(1)
+
 
     const [form] = Form.useForm()
 
-    
     useEffect(() => {
-        setTableData(data)
-        
-
-        return () => {
-
-            setCurrentPage(1)
-        }
-
-    }, [data])
+        console.log('A correr o use effect com filtro', filtro)
+        setFilteredData(defaultProducts)
+        setCurrent(1)
+    },[filtro])
 
     
     const showModal = rowData => {
@@ -66,8 +69,6 @@ const TableContent = ({ data, title, categorias }) => {
         
         const newImgUrl = await uploadImageCloudinary(selectedImage)
 
-        console.log(newImgUrl)
-
         //guardar na base de dados
         let reqObj = { ...selectedRowData }
         if (newImgUrl) {
@@ -75,21 +76,21 @@ const TableContent = ({ data, title, categorias }) => {
         }
 
         try {
-            const dbUpdate = await axios.post('/api/updateProducts', reqObj)
+            await axios.post('/api/updateProducts', reqObj)
             message.success('Produto actualizado com sucesso!')
         } catch (e) {
             message.error('Ocorreu um erro na actualização dos dados', e.message)
         }
-        setLoadingData(false)
-        closeModal()
-
 
         try {
             const getUpdated = await axios.post('/api/getProducts', {tipo: selectedRowData.tipo})
-            setTableData(getUpdated.data)
+            setTableData(getUpdated.data) 
         } catch (e) {
             message.error('Ocorreu um erro na actualização dos dados da tabela', e.message)
         }
+
+        setLoadingData(false)
+        closeModal()
 
     }
 
@@ -102,7 +103,7 @@ const TableContent = ({ data, title, categorias }) => {
 
         //validar o tamanho e formato da imagem
         const fileSize = e.file.size * Math.pow(10, -6)
-        if (e.file.type == ! 'image/jpeg' || e.file.type == ! 'image/jpg' || e.file.type == ! 'image/png') {
+        if (e.file.type !== 'image/jpeg' && e.file.type !== 'image/jpg' && e.file.type !== 'image/png') {
             message.error('A imagem apenas é permitida nos seguintes formatos: JPG, JPEG ou PNG')
             return
         }
@@ -131,6 +132,16 @@ const TableContent = ({ data, title, categorias }) => {
         }
     }
 
+    const onChangeHandler = page => {
+        setCurrent(page)
+    }
+
+
+    const onSearch = e => {
+        const query = e.target.value
+        const filteredData = tableData.filter(el => el.nome.toLowerCase().includes(query.toLowerCase()))
+        setFilteredData(filteredData)
+    }
 
     const columns = [
         {
@@ -146,6 +157,8 @@ const TableContent = ({ data, title, categorias }) => {
             dataIndex: 'Preco',
             key: 'Preco',
             width: '25%',
+            defaultSortOrder: 'ascend',
+            sorter: (a, b) => a.Preco - b.Preco
         },
         {
             title: 'Imagem',
@@ -171,13 +184,17 @@ const TableContent = ({ data, title, categorias }) => {
     ]
 
 
+ 
 
     return (
         <Fragment>
 
             <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding:'0 50px', marginTop:'50px' }}>
                 <h2>Listagem de {title}</h2>
-                <Button icon={<PlusOutlined />} type="primary" onClick={() => setIsCreateModalVisible(true)}>Criar novo</Button>
+                <Space size={30}>
+                    <Search placeholder="Pesquisar..." onChange={onSearch} style={{ width: 200 }} />
+                    <Button icon={<PlusOutlined />} type="primary" onClick={() => setIsCreateModalVisible(true)}>Criar novo</Button>
+                </Space>
             </div>
 
             <br />
@@ -189,11 +206,15 @@ const TableContent = ({ data, title, categorias }) => {
             </div>}
             <Table
                 columns={columns}
-                dataSource={tableData}
+                dataSource={filteredData}
                 rowKey={"_id"}
                 style={{ padding: '0 50px' }}
                 size="small"
-                pagination={{ pageSize: 7}}
+                pagination={{ 
+                    defaultPageSize: 7,
+                    onChange: onChangeHandler,
+                    current
+                }}
             />
 
             <Modal visible={isModalVisible} onOk={submitModalData} onCancel={closeModal} title="Editar produto" okText="Actualizar produto" cancelText="Cancelar">
@@ -222,7 +243,7 @@ const TableContent = ({ data, title, categorias }) => {
                     </Form.Item>
                     <Form.Item label="Categoria do produto" name="categoria" id="categoria">
                         <Select defaultValue="fruta">
-                            {categorias.map(cat => <Select.Option key={cat} value={cat}>{cat}</Select.Option>)}
+                            {categories.map(cat => <Select.Option key={cat} value={cat}>{cat}</Select.Option>)}
                         </Select>
                     </Form.Item>
                     <Upload onChange={fileChangeHandler} multiple={false} fileList={selectedImage} >
@@ -232,7 +253,8 @@ const TableContent = ({ data, title, categorias }) => {
             </Modal>
 
             <pre>
-                {JSON.stringify(selectedRowData, null, 2)}
+                 {JSON.stringify(selectedRowData, null, 2)} 
+               
             </pre>
 
 

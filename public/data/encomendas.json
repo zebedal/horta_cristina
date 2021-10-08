@@ -1,0 +1,62 @@
+[
+    {
+      "nome": "Sérgio Neves",
+      "numFactura": 23456,
+      "data": "07-10-2021",
+      "estado": "concluida",
+      "moradaFacturacao": "Rua das orquideas selvagens, 456",
+      "total": 20.00
+    },
+    {
+        "nome": "Paulo Fonseca",
+        "numFactura": 23457,
+        "data": "08-10-2021",
+        "estado": "concluida",
+        "moradaFacturacao": "Rua das cenas selvagens, 234",
+        "total": 25.00
+      },
+      {
+        "nome": "Margarida Alves",
+        "numFactura": 23458,
+        "data": "08-10-2021",
+        "estado": "concluida",
+        "moradaFacturacao": "Rua José Manuel Napomeceno, nº6, 2870-128 Montijo",
+        "total": 28.34
+      },
+      {
+        "nome": "Jorge Costa",
+        "numFactura": 23459,
+        "data": "08-10-2021",
+        "estado": "concluida",
+        "moradaFacturacao": "Rua José Joaquim Marques, nº98, 2870-128 Montijo",
+        "total": 22.50
+      },
+      {
+        "nome": "Márcia Neves",
+        "numFactura": 23460,
+        "data": "09-10-2021",
+        "estado": "concluida",
+        "moradaFacturacao": "Rua José Joaquim Marques, nº98, 2870-128 Montijo",
+        "total": 27.50
+      },
+      {
+        "nome": "Xavier Saudade",
+        "numFactura": 23461,
+        "data": "09-10-2021",
+        "estado": "pendente",
+        "moradaFacturacao": "Rua José Joaquim Marques, nº98, 2870-128 Montijo",
+        "total": 23.50
+      },
+      {
+        "nome": "Regina Bombom",
+        "numFactura": 23462,
+        "data": "10-10-2021",
+        "estado": "pendente",
+        "moradaFacturacao": "Rua José Costa Gil, nº98, 2870-128 Montijo",
+        "total": 18.50
+      }
+  
+  
+  
+  
+  ]

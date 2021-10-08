@@ -3,34 +3,38 @@
 
 
 import 'antd/dist/antd.css';
-import { Menu, Layout, Modal } from 'antd';
-import { UnorderedListOutlined , UserOutlined, AuditOutlined  } from '@ant-design/icons';
-import TableContent from '../../components/admin/TableContent';
-import { dbConnect, getProdutos } from '../../db-utils/db-connection';
+import { Menu, Layout, Button, Row } from 'antd';
+import { UnorderedListOutlined , UserOutlined, AuditOutlined, LogoutOutlined   } from '@ant-design/icons';
+import TableProdutos from '../../components/admin/TableProdutos';
+import dynamic from 'next/dynamic'
+import { dbConnect, getProdutos, getEncomendas } from '../../db-utils/db-connection';
 import { useState } from 'react';
+import {getSession, signOut} from 'next-auth/client'
 
 const { Header, Footer, Sider, Content } = Layout;
 const {SubMenu} = Menu
 
 
+const Encomendas = dynamic(() => import('../../components/admin/Encomendas'))
 
-const Backoffice = ({produtos}) => {
 
-    const parsedProducts = JSON.parse(produtos)
-    const defaultProducts = parsedProducts.filter(prod => prod.tipo === 'fruta')
-    const categories = [...new Set(parsedProducts.map(prod => prod.tipo))]
+const Backoffice = ({produtos, encomendas}) => {
+
     
-
-    const [contentData, setContentData] = useState(defaultProducts)
+    const [filter, setFilter] = useState("fruta")
     const [title, setTitle] = useState('frutas')
     
     
-
     const toggleContent = obj => {
-        const filteredContent = parsedProducts.filter(prod => prod.tipo === obj.key)
-        setContentData(filteredContent)
         setTitle(obj.title)
+        setFilter(obj.key)
     }
+
+    const logoutHandler = () => {
+       signOut()
+    }
+
+    console.log(title)
    
     return (
 
@@ -43,39 +47,55 @@ const Backoffice = ({produtos}) => {
                         <Menu.Item key="vegetais" onClick={() => toggleContent({key:'vegetais', title:'vegetais'})}>Vegetais</Menu.Item>
                         <Menu.Item key="pao" onClick={() => toggleContent({key: 'pao', title:'pães & bolos'})}>Pães & Bolos</Menu.Item>
                     </SubMenu>
-                    <Menu.Item key="orders" icon={<UnorderedListOutlined  />}>Encomendas</Menu.Item>
+                    <Menu.Item key="encomendas" onClick={() => toggleContent({key:'encomendas', title:'encomendas'})} icon={<UnorderedListOutlined />}>Encomendas</Menu.Item>
                 </Menu>
             </Sider>
             <Layout>
                 <Header style={{background:'#002766'}}>
-                    <h1 style={{color:'white'}}>Horta Backoffice</h1>
+                    <Row align="middle" justify="space-between">
+                        <h1 style={{color:'white'}}>Horta Backoffice</h1>
+                        <Button icon={<LogoutOutlined />} type="primary" color={'red'} onClick={logoutHandler}>Logout</Button>
+                    </Row>
                 </Header>
                 <Content>
-                    <TableContent data={contentData} title={title} categorias={categories} />
+                    {filter !== 'encomendas' && <TableProdutos dados={produtos} title={title} filtro={filter} />}
+                    {filter === 'encomendas' && <Encomendas dados={JSON.parse(encomendas)} title={title} /> }
                 </Content>
                 <Footer>Footer</Footer>
             </Layout>
-
-            
         </Layout> 
-    
-    
-       
+
     )
 }
 
 export default Backoffice
 
 
-export async function getStaticProps() {
+export async function getServerSideProps(context) {
+
+
+    console.log(context)
+    const session = await getSession({req: context.req})
+
+    if (!session) {
+        return {
+            redirect: {
+                destination: '/login',
+                permanent: false
+            }
+        }
+    }
 
     const client = await dbConnect()
     const produtos = await getProdutos(client)
+    const encomendas = await getEncomendas(client)
 
+    
 
     return {
         props: {
-            produtos: JSON.stringify(produtos)
+            produtos: JSON.stringify(produtos),
+            encomendas: JSON.stringify(encomendas)
         }
     }
 }

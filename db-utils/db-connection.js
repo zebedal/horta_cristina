@@ -20,10 +20,17 @@ export const getProdutos = async (client, categoria) => {
     else {
         const result = await db.collection('produtos').find().toArray()
         return result
-    }
-
-    
+    } 
 }
+
+export const getEncomendas = async (client) => {
+    const db = client.db()
+    const result = await db.collection('encomendas').find().toArray()
+    client.close()
+    return result
+   
+}
+
 export const updateDocument = async (client, collection, id, updatedObj) => {
     const db = client.db()
     const result = await db.collection(collection).updateOne({"_id": ObjectId(id)}, {$set: updatedObj})
