@@ -1,6 +1,6 @@
 
 import { Table, Space, Button, Input, DatePicker, Row, Tag } from 'antd';
-import { Fragment, useState, useEffect, useReducer } from 'react';
+import { Fragment, useState, useEffect } from 'react';
 import 'moment/locale/pt';
 import { SearchOutlined } from '@ant-design/icons';
 import locale from 'antd/es/date-picker/locale/pt_PT';
@@ -50,37 +50,30 @@ const columns = [
     },
 ]
 
-const initialState = {
-    hoje: {
+const buttonStates = [
+    {
+        btn: 'hoje',
         selected: false
     },
-    ontem: {
+    {
+        btn: 'ontem',
         selected: false
     },
-    semana: {
+    {
+        btn: 'semana',
         selected: false
     }
-}
+]
 
-const reducer = (state, action) => {
-    switch (action.type) {
-        case 'hoje':
-            
-            break;
-    
-        default:
-            break;
-    }
-}
 
 const Encomendas = ({ dados, title }) => {
 
     const [tableData, setTableData] = useState([])
     const [current, setCurrent] = useState(1)
     const [filteredData, setFilteredData] = useState([])
-    const [btnStates, dispatch] = useReducer(reducer, initialState)
+    const [btnStates, setbtnStates] = useState(buttonStates)
 
-   
+    console.log(btnStates)
 
     useEffect(() => {
         setTableData(dados)
@@ -121,23 +114,29 @@ const Encomendas = ({ dados, title }) => {
     }
 
     const hojeFilterHandler = () => {
-        
-        if(!btnHojeSelected) {
+
+        //desligar todos os botos menos este
+        const f = btnStates.map(obj => {
+            if (obj.btn === 'hoje') return { ...obj, selected: !obj.selected }
+            return { ...obj, selected: false }
+        })
+
+        if (!btnStates[0].selected) {
             const today = new Date().toLocaleDateString('pt-PT')
             const filtered = filteredData.filter(el => {
                 const d = el.data.replace(/-/g, "/")
                 return d === today
             })
             setFilteredData(filtered)
-            setBtnHojeSelected(true)
+            setbtnStates(f)
         } else {
             setFilteredData(tableData)
-            setBtnHojeSelected(false)
+            setbtnStates(f)
         }
-       
-       
         
     }
+
+
 
     return (
         <Fragment>
@@ -150,7 +149,7 @@ const Encomendas = ({ dados, title }) => {
                 <Space size={10}>
                     <span>Pesquisar por data:</span>
                     <RangePicker locale={locale} format="DD-MM-YYYY" onChange={rangePickerHandler} />
-                    <Button type="primary" onClick={hojeFilterHandler} style={{background:`${btnHojeSelected ? 'green' : '#1890ff'}`}}>Hoje</Button>
+                    <Button type="primary" onClick={hojeFilterHandler} style={{ background: btnStates[0].selected ? 'green' : '#1890ff' }}>Hoje</Button>
                     <Button type="primary" onClick={(e) => dateFilterHandler(e, 'ontem')}>Ontem</Button>
                     <Button type="primary" onClick={() => dateFilterHandler('semana')}>Última Semana</Button>
                 </Space>
