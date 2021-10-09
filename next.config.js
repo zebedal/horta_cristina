@@ -5,5 +5,6 @@ module.exports = {
   },
   env: {
     cloudinaryUrl: 'https://api.cloudinary.com/v1_1/sergio-paulo-neves/image/upload',
+    NEXTAUTH_URL: 'https://horta-cristina.vercel.app/'
   },
 }

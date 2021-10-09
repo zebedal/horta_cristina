@@ -1,4 +1,4 @@
-import { Layout, Row, Col, Form, Input, Button, message } from 'antd';
+import { Layout, Row, Col, Form, Input, Button } from 'antd';
 import 'antd/dist/antd.css';
 const { Header,  Content } = Layout;
 import {signIn} from 'next-auth/client'
