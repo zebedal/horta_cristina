@@ -3,7 +3,7 @@ import { Table, Space, Button, Input, DatePicker, Row, Tag } from 'antd';
 import { Fragment, useState, useEffect } from 'react';
 import 'moment/locale/pt';
 import { SearchOutlined } from '@ant-design/icons';
-import locale from 'antd/es/date-picker/locale/pt_PT';
+/* import locale from 'antd/es/date-picker/locale/pt_PT'; */
 
 
 const { Search } = Input;
@@ -136,7 +136,13 @@ const Encomendas = ({ dados, title }) => {
         
     }
 
-
+    const ontemFilterHandler = () => {
+         //desligar todos os botos menos este
+         const f = btnStates.map(obj => {
+            if (obj.btn === 'ontem') return { ...obj, selected: !obj.selected }
+            return { ...obj, selected: false }
+        })
+    }
 
     return (
         <Fragment>
@@ -150,7 +156,7 @@ const Encomendas = ({ dados, title }) => {
                     <span>Pesquisar por data:</span>
                     <RangePicker locale={locale} format="DD-MM-YYYY" onChange={rangePickerHandler} />
                     <Button type="primary" onClick={hojeFilterHandler} style={{ background: btnStates[0].selected ? 'green' : '#1890ff' }}>Hoje</Button>
-                    <Button type="primary" onClick={(e) => dateFilterHandler(e, 'ontem')}>Ontem</Button>
+                    <Button type="primary" onClick={ontemFilterHandler} style={{ background: btnStates[0].selected ? 'green' : '#1890ff' }}>Ontem</Button>
                     <Button type="primary" onClick={() => dateFilterHandler('semana')}>Última Semana</Button>
                 </Space>
                 <Search
