@@ -44,3 +44,8 @@ export const deleteDocument = async (client, collection, id) => {
     
 }
 
+export const findUser = async(client, user) => {
+    const db = client.db()
+    const result = await db.collection('logins').findOne({userName: user})
+    return result
+}

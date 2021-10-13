@@ -1,0 +1,37 @@
+
+.formControl {
+    position: relative;
+}
+.formControl > * {
+    display: block;
+    width: 100%;
+}
+.formControl > input {
+    outline: none;
+    border: 1px solid rgba(0,0,0, .2);
+    font-size: 12px;
+    padding: 5px;
+    border-radius: 5px;
+}
+.formControl > input:invalid {
+    border: 1px solid red !important;
+    outline: none !important;
+}
+.formControl > input:hover {
+    border: 1px solid var(--green)
+}
+.formControl > input:focus {
+    outline: 2px solid var(--green);
+}
+.formControl > label {
+    margin-bottom: 5px;
+    font-size: 12px;
+}
+
+.error {
+    font-size: 11px;
+    color: red;
+    position: absolute;
+    bottom: -30px;
+}
+

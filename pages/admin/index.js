@@ -3,49 +3,55 @@
 
 
 import 'antd/dist/antd.css';
-import { Menu, Layout, Button, Row } from 'antd';
-import { UnorderedListOutlined , UserOutlined, AuditOutlined, LogoutOutlined   } from '@ant-design/icons';
+import { Menu, Layout, Button, Row, Spin } from 'antd';
+import { UnorderedListOutlined , UserOutlined, AuditOutlined, LogoutOutlined, BarChartOutlined } from '@ant-design/icons';
 import TableProdutos from '../../components/admin/TableProdutos';
 import dynamic from 'next/dynamic'
 import { dbConnect, getProdutos, getEncomendas } from '../../db-utils/db-connection';
 import { useState } from 'react';
 import {getSession, signOut} from 'next-auth/client'
+import Dashboard from '../../components/admin/Dashboard';
 
 const { Header, Footer, Sider, Content } = Layout;
 const {SubMenu} = Menu
 
 
-const Encomendas = dynamic(() => import('../../components/admin/Encomendas'))
+const Encomendas = dynamic(() => import('../../components/admin/Encomendas'), {loading: () => <Spin 
+    size="large" tip="A carregar encomendas..." style={{position:'absolute', top:'50%', left:'50%', transform:'translate(-50%,-50%)' }}></Spin>} )
 
 
 const Backoffice = ({produtos, encomendas}) => {
 
     
-    const [filter, setFilter] = useState("fruta")
+    const [filter, setFilter] = useState("")
     const [title, setTitle] = useState('frutas')
+    const [activeContent, setActiveContent] = useState("dashboard")
     
     
     const toggleContent = obj => {
-        setTitle(obj.title)
+        setActiveContent(obj.content)
         setFilter(obj.key)
+        setTitle(obj.title)  
     }
 
     const logoutHandler = () => {
        signOut()
     }
    
+    
     return (
 
-        <Layout>
-            <Sider style={{paddingTop:'150px', height: '100vh', background: '#fff'}}>
+        <Layout style={{minHeight:'100vh'}}>
+            <Sider style={{paddingTop:'150px', background: '#fff'}}>
                 <Menu mode="inline" style={{}}>
+                    <Menu.Item key="dashboard" icon={<BarChartOutlined />} onClick={() => toggleContent({content:'dashboard', key:"dashboard", title:'Dashboard'})}>Dashboard</Menu.Item>
                     <Menu.Item key="customers" icon={<UserOutlined />}>Lista de clientes</Menu.Item>
                     <SubMenu key="products" icon={<AuditOutlined />} title="Produtos">
-                        <Menu.Item key="fruta" onClick={() => toggleContent({key:'fruta', title:'frutas'})}>Frutas</Menu.Item>
-                        <Menu.Item key="vegetais" onClick={() => toggleContent({key:'vegetais', title:'vegetais'})}>Vegetais</Menu.Item>
-                        <Menu.Item key="pao" onClick={() => toggleContent({key: 'pao', title:'pães & bolos'})}>Pães & Bolos</Menu.Item>
+                        <Menu.Item key="fruta" onClick={() => toggleContent({content:'produtos', key:'fruta', title:'frutas'})}>Frutas</Menu.Item>
+                        <Menu.Item key="vegetais" onClick={() => toggleContent({content:'produtos', key:'vegetais', title:'vegetais'})}>Vegetais</Menu.Item>
+                        <Menu.Item key="pao" onClick={() => toggleContent({content:'produtos', key: 'pao', title:'pães & bolos'})}>Pães & Bolos</Menu.Item>
                     </SubMenu>
-                    <Menu.Item key="encomendas" onClick={() => toggleContent({key:'encomendas', title:'encomendas'})} icon={<UnorderedListOutlined />}>Encomendas</Menu.Item>
+                    <Menu.Item key="encomendas" onClick={() => toggleContent({content:'encomendas', key:"encomendas",  title:'encomendas'})} icon={<UnorderedListOutlined />}>Encomendas</Menu.Item>
                 </Menu>
             </Sider>
             <Layout>
@@ -56,8 +62,9 @@ const Backoffice = ({produtos, encomendas}) => {
                     </Row>
                 </Header>
                 <Content>
-                    {filter !== 'encomendas' && <TableProdutos dados={produtos} title={title} filtro={filter} />}
-                    {filter === 'encomendas' && <Encomendas dados={JSON.parse(encomendas)} title={title} /> }
+                    {activeContent === 'produtos' && <TableProdutos dados={produtos} title={title} filtro={filter} />}
+                    {activeContent === 'encomendas' && <Encomendas dados={JSON.parse(encomendas)} title={title} /> }
+                    {activeContent === 'dashboard' && <Dashboard /> }
                 </Content>
                 <Footer>Footer</Footer>
             </Layout>
@@ -72,14 +79,12 @@ export default Backoffice
 export async function getServerSideProps(context) {
 
 
-    
     const session = await getSession({req: context.req})
-    console.log(session)
 
     if (!session) {
         return {
             redirect: {
-                destination: '/login',
+                destination: '/admin/login',
                 permanent: false
             }
         }
@@ -88,7 +93,7 @@ export async function getServerSideProps(context) {
     const client = await dbConnect()
     const produtos = await getProdutos(client)
     const encomendas = await getEncomendas(client)
-
+    client.close()
     
 
     return {

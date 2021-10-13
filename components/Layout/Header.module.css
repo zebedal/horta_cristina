@@ -1,0 +1,32 @@
+.Header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding:10px;
+    z-index: 998;
+    position: fixed;
+    left: 0;
+    right: 0;
+    max-width: 1280px;
+    margin: 0 auto;
+}
+.commerce {
+    margin-left: 50px;
+}
+.commerce > * {
+    font-size: 24px;
+    color: var(--text-color);
+    cursor: pointer;
+}
+.commerce > *:nth-child(1) {
+    margin-right: 10px;
+}
+
+@media(max-width:750px) {
+    .commerce {
+        margin-left: 0px !important;
+    }
+    .logo {
+        width: 200px;
+    }
+}

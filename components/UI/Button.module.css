@@ -1,0 +1,25 @@
+.Button {
+    display: inline-block;
+    width: fit-content;
+    padding: 7px 25px;
+    background: var(--green);
+    color: white;
+    cursor: pointer;
+    transition: .3s;
+    border-radius: 5px;
+    border: none;
+}
+.Button:hover {
+    background: var(--green2);
+}
+.Button.secondary {
+    display: inline-block;
+    width: fit-content;
+    padding: 7px 25px;
+    background: white;
+    color: var(--text-color);
+    cursor: pointer;
+    transition: .3s;
+    border-radius: 5px;
+    border: 1px solid var(--text-color);
+}

@@ -1,54 +1,18 @@
 
-import { Table, Space, Button, Input, DatePicker, Row, Tag } from 'antd';
+import { Table, Space, Button, Input, DatePicker, Row, Tag, Select } from 'antd';
 import { Fragment, useState, useEffect } from 'react';
 import 'moment/locale/pt';
 import { SearchOutlined } from '@ant-design/icons';
 /* import locale from 'antd/es/date-picker/locale/pt_PT'; */
-
+import Invoice from '../Invoice';
+import Pdf from '../svg/Pdf'
+import {PDFDownloadLink} from '@react-pdf/renderer'
+import {invoiceData} from '../../dummy-data/invoice'
 
 const { Search } = Input;
 const { RangePicker } = DatePicker;
+const { Option } = Select;
 
-const columns = [
-    {
-        title: 'Nome',
-        dataIndex: 'nome',
-        key: 'nome',
-        width: '15%',
-        defaultSortOrder: 'ascend',
-    },
-    {
-        title: 'Morada',
-        dataIndex: 'moradaFacturacao',
-        key: 'moradaFacturacao',
-        width: '35%',
-    },
-    {
-        title: 'Data',
-        dataIndex: 'data',
-        key: 'data',
-        width: '15%',
-        sorter: (a, b) => new Date(a.data) - new Date(b.data)
-    },
-    {
-        title: 'Estado',
-        dataIndex: 'estado',
-        key: 'estado',
-        width: '15%',
-        render: tags => {
-            const color = tags === 'concluida' ? 'green' : 'yellow'
-            return (
-                <Tag color={color}>{tags.toUpperCase()} </Tag>
-            )
-        }
-    },
-    {
-        title: 'Factura',
-        dataIndex: 'numFactura',
-        key: 'numFactura',
-        width: '20%',
-    },
-]
 
 const buttonStates = [
     {
@@ -68,17 +32,72 @@ const buttonStates = [
 
 const Encomendas = ({ dados, title }) => {
 
+
     const [tableData, setTableData] = useState([])
     const [current, setCurrent] = useState(1)
     const [filteredData, setFilteredData] = useState([])
     const [btnStates, setbtnStates] = useState(buttonStates)
-
-    console.log(btnStates)
+    const [loading, setloading] = useState(true)
+   
 
     useEffect(() => {
         setTableData(dados)
         setFilteredData(dados)
+        setloading(false)
     }, [])
+
+    const columns = [
+        {
+            title: 'Nome',
+            dataIndex: 'nome',
+            key: 'nome',
+            width: '15%',
+            defaultSortOrder: 'ascend',
+        },
+        {
+            title: 'Morada',
+            dataIndex: 'moradaFacturacao',
+            key: 'moradaFacturacao',
+            width: '35%',
+        },
+        {
+            title: 'Data',
+            dataIndex: 'data',
+            key: 'data',
+            width: '15%',
+            sorter: (a, b) => new Date(a.data) - new Date(b.data)
+        },
+        {
+            title: 'Estado',
+            dataIndex: 'estado',
+            key: 'estado',
+            width: '15%',
+            render: estado => {
+                return (
+                    <Select defaultValue={estado} style={{width:'140px'}}>
+                        <Option value="pendente"> <Tag color="yellow">{"Pendente".toUpperCase()}</Tag></Option>
+                        <Option value="concluida"><Tag color="green">{"Concluída".toUpperCase()}</Tag></Option>
+                        <Option value="cancelada" ><Tag color="red">{"Cancelada".toUpperCase()}</Tag></Option>
+                    </Select>
+                )
+            }
+        },
+        {
+            title: 'Factura',
+            dataIndex: 'numFactura',
+            key: 'numFactura',
+            width: '20%',
+        },
+        {
+            title: 'Download',
+            key:'pdf',
+            render: (_, record) => <PDFDownloadLink document={<Invoice invoice={invoiceData} />}><Pdf/></PDFDownloadLink>
+        }
+    ]
+
+    const handlePdf = (rowData) => {
+        console.log(rowData)
+    }
 
 
     const onSearch = e => {
@@ -105,7 +124,7 @@ const Encomendas = ({ dados, title }) => {
         const dataInicio = dateString[0]
         const dataFim = dateString[1]
 
-        const filtered = filteredData.filter(el => {
+        const filtered = tableData.filter(el => {
             const parsedData = Date.parse(el.data)
             return parsedData >= Date.parse(dataInicio) && parsedData <= Date.parse(dataFim)
         })
@@ -123,7 +142,7 @@ const Encomendas = ({ dados, title }) => {
 
         if (!btnStates[0].selected) {
             const today = new Date().toLocaleDateString('pt-PT')
-            const filtered = filteredData.filter(el => {
+            const filtered = tableData.filter(el => {
                 const d = el.data.replace(/-/g, "/")
                 return d === today
             })
@@ -137,12 +156,57 @@ const Encomendas = ({ dados, title }) => {
     }
 
     const ontemFilterHandler = () => {
-         //desligar todos os botos menos este
+       
          const f = btnStates.map(obj => {
             if (obj.btn === 'ontem') return { ...obj, selected: !obj.selected }
             return { ...obj, selected: false }
         })
+
+        let today = new Date()
+        let yesterday = new Date()
+        yesterday.setDate(today.getDate()-1)
+        const wtf = yesterday.toLocaleDateString('pt-PT')
+
+        if (!btnStates[1].selected) {
+            const filtered = tableData.filter(el => {
+                const d = el.data.replace(/-/g, "/")
+                return d === wtf
+            })
+            setFilteredData(filtered)
+            setbtnStates(f)
+        } else {
+            setFilteredData(tableData)
+            setbtnStates(f)
+        }
+        
     }
+
+    const semanaFilterhandler = () => {
+        const f = btnStates.map(obj => {
+            if (obj.btn === 'semana') return { ...obj, selected: !obj.selected }
+            return { ...obj, selected: false }
+        })
+
+        let today = new Date()
+        let semana = new Date()
+        semana.setDate(today.getDate()-7)
+        const td = today.toLocaleDateString('pt-PT')
+        const sem = semana.toLocaleDateString('pt-PT')
+
+        if (!btnStates[2].selected) {
+            const filtered = tableData.filter(el => {
+                const d = el.data.replace(/-/g, "/")
+                return d > sem && d < td
+            })
+            filtered.sort((a, b) => new Date(a.data) - new Date(b.data))
+            setFilteredData(filtered)
+            setbtnStates(f)
+        } else {
+            setFilteredData(tableData)
+            setbtnStates(f)
+        }
+    }
+
 
     return (
         <Fragment>
@@ -154,10 +218,10 @@ const Encomendas = ({ dados, title }) => {
             <Row style={{ padding: ' 0 50px' }} justify="space-between">
                 <Space size={10}>
                     <span>Pesquisar por data:</span>
-                    <RangePicker locale={locale} format="DD-MM-YYYY" onChange={rangePickerHandler} />
+                    <RangePicker /* locale={locale} */ format="DD-MM-YYYY" onChange={rangePickerHandler} />
                     <Button type="primary" onClick={hojeFilterHandler} style={{ background: btnStates[0].selected ? 'green' : '#1890ff' }}>Hoje</Button>
-                    <Button type="primary" onClick={ontemFilterHandler} style={{ background: btnStates[0].selected ? 'green' : '#1890ff' }}>Ontem</Button>
-                    <Button type="primary" onClick={() => dateFilterHandler('semana')}>Última Semana</Button>
+                    <Button type="primary" onClick={ontemFilterHandler} style={{ background: btnStates[1].selected ? 'green' : '#1890ff' }}>Ontem</Button>
+                    <Button type="primary" onClick={semanaFilterhandler} style={{ background: btnStates[2].selected ? 'green' : '#1890ff' }}>Última Semana</Button>
                 </Space>
                 <Search
                     placeholder="Pesquisar..."
@@ -185,11 +249,14 @@ const Encomendas = ({ dados, title }) => {
                 }}
             />
 
-            <pre>
-                {JSON.stringify(filteredData, null, 2)}
-            </pre>
+            
+             
+             {/* {pdfReady && <PDFDownloadLink document={<Invoice invoice={invoiceData} />}>Link</PDFDownloadLink>} */}
+
 
         </Fragment>
+
+        
     )
 }
 

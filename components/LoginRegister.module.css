@@ -1,0 +1,47 @@
+.wrapper {
+    position: relative;
+    display: flex;
+}
+.wrapper > * {
+    flex: 1 50%;
+}
+.formWrapper {
+    padding: 40px;
+    align-self: center;
+    position: relative;
+}
+
+.imgWrapper {
+    position: relative;
+    height: 550px;
+    /* -webkit-clip-path: ellipse(50% 73% at 67% 49%);
+clip-path: ellipse(50% 73% at 67% 49%); */
+    
+}
+.imgWrapper > img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+.imgWrapper > svg {
+    position: absolute;
+    height: 100%;
+    left: -5px;
+}
+
+
+
+@media(max-width:550px) {
+    .formWrapper {
+        flex-basis: 90%;
+    }
+}
+@media(max-width:450px) {
+    .formWrapper {
+        padding: 20px;
+    }
+    .imgWrapper {
+        display: none;
+    }
+    
+}

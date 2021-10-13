@@ -31,7 +31,7 @@ const TableContent = ({ dados, title, filtro}) => {
     const [form] = Form.useForm()
 
     useEffect(() => {
-        console.log('A correr o use effect com filtro', filtro)
+       
         setFilteredData(defaultProducts)
         setCurrent(1)
     },[filtro])

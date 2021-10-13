@@ -1,0 +1,44 @@
+.Navigation {
+    margin: -10px;
+    display: flex;
+    margin-left: auto;
+}
+.Navigation  a {
+    text-decoration: none;
+    font-size: 13px;
+    color: var(--text-color) !important;
+    margin: 10px;
+    position: relative;
+   
+}
+.Navigation > a:hover {
+    color: var(--green) !important;
+}
+.Navigation a.active {
+    color: var(--green) !important;
+}
+.Navigation a::before{
+    content: "";
+    position: absolute;
+    bottom: -5px;
+    left: 0;
+    width: 0;
+    height: 2px;
+    background: var(--green) !important;
+    transition: .3s ease;
+}
+.Navigation a.active::before{
+    content: "";
+    position: absolute;
+    bottom: -2px;
+    left: 0;
+    width: 100%;
+    height: 2px;
+    background: var(--green) !important;
+}
+
+@media(max-width:750px) {
+    .Navigation {
+        display: none;
+    }
+}
