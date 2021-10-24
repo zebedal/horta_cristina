@@ -19,10 +19,10 @@ const styles = StyleSheet.create({
 
   const InvoiceTitle = ({title}) => {
 
-    console.log(title)
+   /*  console.log(title) */
 
     return (
-<View style={styles.titleContainer}>
+    <View style={styles.titleContainer}>
         <Text style={styles.reportTitle}>{title}</Text>
     </View>
     )

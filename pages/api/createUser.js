@@ -1,20 +1,19 @@
-import { dbConnect, findUser } from "../../db-utils/db-connection"
+import { dbConnect, findUser, insertDocument } from "../../db-utils/db-connection"
 
 
 const handler = async (req, res) => {
 
 
-    const {username, password} = req.body.data
+    const {username, password, email} = req.body.data
 
     //verificar se este username já existe
     const client = await dbConnect()
-    const result = await findUser(client, username)
-    if(!result) {
-        res.json({message: 'Este utilizador não existe', ok: false})
-    } else if(result.password !== password) {
-        res.json({message: 'A password está incorrecta', ok: false})
-    }
+    const result = await findUser(client, email)
+    if(result) {
+        res.json({message: 'Este utilizador já existe', ok: false})
+    } 
     else {
+        await insertDocument(client, 'logins', {name: username, password: password, email: email})
         res.json({message:'ok', ok:true})
         client.close()
     }

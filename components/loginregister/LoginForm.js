@@ -1,20 +1,23 @@
-import { Fragment, useState } from 'react'
-import Button from '../components/UI/Button'
+import { Fragment, useState, useContext } from 'react'
+import Button from '../UI/Button'
 import { useForm } from 'react-hook-form';
 import { message } from 'antd';
 import styles from './LoginForm.module.css'
-import Spinner from './UI/Spinner';
+import Spinner from '../UI/Spinner';
 import {signIn} from 'next-auth/client'
+import ModalContext from '../../store/modal-context'
+import AuthContext from '../../store/auth-context';
 
 const LoginForm = ({openRegister}) => {
 
     const { register, handleSubmit, formState: { errors } } = useForm()
     const [loading, setLoading] = useState(false)
 
-
+    const {closeModal} = useContext(ModalContext)
+    const {logIn} = useContext(AuthContext)
 
     const onSubmit = async data => {
-        console.log(data)
+
         setLoading(true)
         const result = await signIn('credentials', {
             redirect: false,
@@ -22,10 +25,16 @@ const LoginForm = ({openRegister}) => {
             password: data.password,
             userType: 'client'
         })
+    
         if(result.error) {
             message.error(result.error)
+            setLoading(false)
+        } else {
+            setLoading(false)
+            closeModal()
+            logIn()
         }
-        setLoading(false)
+        
     };
 
   
@@ -38,10 +47,10 @@ const LoginForm = ({openRegister}) => {
 
                 <form onSubmit={handleSubmit(onSubmit)}>
                     <div className={styles.formControl}>
-                        <label htmlFor="username">Email:</label>
+                        <label htmlFor="email">Email:</label>
                         <input  id="email" {...register("email", { required: true, pattern: /^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,6}$/})} />
                         {errors?.email?.type === "required" && <p className={styles.error}>Por favor preencha o email</p>}
-                        {errors?.email?.type === "pattern" && <p className={styles.error}>O email deve incluir um @</p>}
+                        {errors?.email?.type === "pattern" && <p className={styles.error}>O email não é válido</p>}
                        
                     </div>
                     <br />

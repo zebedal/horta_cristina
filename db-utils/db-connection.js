@@ -23,12 +23,19 @@ export const getProdutos = async (client, categoria) => {
     } 
 }
 
+
+
 export const getEncomendas = async (client) => {
     const db = client.db()
     const result = await db.collection('encomendas').find().toArray()
-    client.close()
     return result
    
+}
+
+export const getCabazes = async (client) => {
+    const db = client.db()
+    const result = await db.collection('cabazes').find().toArray()
+    return result
 }
 
 export const updateDocument = async (client, collection, id, updatedObj) => {
@@ -46,6 +53,6 @@ export const deleteDocument = async (client, collection, id) => {
 
 export const findUser = async(client, user) => {
     const db = client.db()
-    const result = await db.collection('logins').findOne({userName: user})
+    const result = await db.collection('logins').findOne({email: user})
     return result
 }

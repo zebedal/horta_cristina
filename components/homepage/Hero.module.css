@@ -1,0 +1,22 @@
+.heroContainer {
+    height: 700px;
+    margin-top: 93px;
+    position: relative;
+}
+.Container {
+    height: 100%;
+}
+.wrapper {
+    position: absolute;
+    top: 30%;
+    color: white;
+    font-family: 'Poppins', sans-serif
+}
+.wrapper > h1 {
+    font-weight: 600;
+    font-size: 50px;
+    color: white;
+}
+.subtitle {
+    font-size: 1rem;
+}

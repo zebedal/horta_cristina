@@ -1,27 +1,64 @@
+.wrapper {
+    width: 100%;
+    z-index: 998;
+    position: fixed;
+    left: 0;
+    right: 0;
+    
+    top: 0;
+    background: white;
+}
 .Header {
     display: flex;
     justify-content: space-between;
     align-items: center;
     padding:10px;
-    z-index: 998;
-    position: fixed;
-    left: 0;
-    right: 0;
     max-width: 1280px;
     margin: 0 auto;
 }
+
 .commerce {
     margin-left: 50px;
+    display: flex;
+    align-items: center;
 }
 .commerce > * {
-    font-size: 24px;
+    font-size: 22px;
     color: var(--text-color);
     cursor: pointer;
 }
 .commerce > *:nth-child(1) {
-    margin-right: 10px;
+    margin-right: 15px;
+    font-size: 20px;
+    display: flex;
 }
-
+.userWrapper {
+    display: flex;
+    align-items: center;
+    position: relative;
+    padding: 2px 0;
+}
+.userWrapper:hover > .userOptions {
+    display: block;
+}
+.userOptions {
+    position: absolute;
+    top: 22px;
+    padding: 15px;
+    display: none;
+    border-radius: 5px;
+    background: var(--text-color);
+}
+.userOptions > * {
+    font-size: 13px;
+    white-space: nowrap;
+    margin-top: 7px;
+    transition: .3s;
+    color: white;
+}
+.userOptions > *:hover {
+    color: var(--green);
+}
 @media(max-width:750px) {
     .commerce {
         margin-left: 0px !important;

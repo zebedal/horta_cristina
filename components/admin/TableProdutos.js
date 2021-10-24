@@ -3,22 +3,24 @@ import Image from 'next/image'
 import { EditOutlined, DeleteOutlined, UploadOutlined, PlusOutlined } from '@ant-design/icons';
 import { Fragment, useState } from 'react';
 import axios from 'axios';
-import React, {useEffect} from 'react'
-import {uploadImageCloudinary} from '../../lib/utils'
+import React, { useEffect } from 'react'
+import { uploadImageCloudinary } from '../../lib/utils'
 
 const { Search } = Input;
 
 
-const TableContent = ({ dados, title, filtro}) => {
+const TableContent = ({ dados, title, filtro }) => {
 
-    
+    console.log(filtro)
+
+
     const parsedProducts = JSON.parse(dados)
     const defaultProducts = parsedProducts.filter(prod => prod.tipo === filtro)
     const categories = [...new Set(parsedProducts.map(prod => prod.tipo))]
 
 
-    const [tableData, setTableData] = useState(defaultProducts) 
-    const [filteredData, setFilteredData] = useState(defaultProducts)   
+    const [tableData, setTableData] = useState(defaultProducts)
+    const [filteredData, setFilteredData] = useState(defaultProducts)
     const [isModalVisible, setIsModalVisible] = useState(false)
     const [isCreateModalVisible, setIsCreateModalVisible] = useState(false)
     const [selectedRowData, setSelectedRowData] = useState({})
@@ -31,12 +33,11 @@ const TableContent = ({ dados, title, filtro}) => {
     const [form] = Form.useForm()
 
     useEffect(() => {
-       
         setFilteredData(defaultProducts)
         setCurrent(1)
-    },[filtro])
+    }, [filtro])
 
-    
+
     const showModal = rowData => {
         setSelectedRowData(rowData)
         setIsModalVisible(true)
@@ -49,24 +50,30 @@ const TableContent = ({ dados, title, filtro}) => {
     }
 
     const createNewProductHandler = async () => {
-        /* createProductForm.current.submit() */
+        setLoadingData(true)
 
+        const newImgUrl = await uploadImageCloudinary(selectedImage)
 
         const obj = {
             nome: form.getFieldValue('nome'),
-            preco: +form.getFieldValue('preco'),
-            categoria: form.getFieldValue('categoria')
+            Preco: +form.getFieldValue('preco'),
+            tipo: form.getFieldValue('categoria'),
+            image_url: newImgUrl ? newImgUrl : ""
         }
-     
-       const result = await axios.post('/api/createProduct', obj)
-    
-    
+        await axios.post('/api/createProduct', obj)
+        setLoadingData(false)
+        setIsCreateModalVisible(false)
+        message.success('Produto criado com sucesso')
+
+        const getUpdated = await axios.post('/api/getProducts', { tipo: obj.tipo })
+        setFilteredData(getUpdated.data)
+
     }
 
     const submitModalData = async () => {
 
         setLoadingData(true)
-        
+
         const newImgUrl = await uploadImageCloudinary(selectedImage)
 
         //guardar na base de dados
@@ -83,8 +90,8 @@ const TableContent = ({ dados, title, filtro}) => {
         }
 
         try {
-            const getUpdated = await axios.post('/api/getProducts', {tipo: selectedRowData.tipo})
-            setTableData(getUpdated.data) 
+            const getUpdated = await axios.post('/api/getProducts', { tipo: selectedRowData.tipo })
+            setTableData(getUpdated.data)
         } catch (e) {
             message.error('Ocorreu um erro na actualização dos dados da tabela', e.message)
         }
@@ -121,15 +128,21 @@ const TableContent = ({ dados, title, filtro}) => {
 
     const deleteTableRow = async (id) => {
         setDeleteLoadingData(true)
+
+        const obj = {
+            id: id,
+            collection: 'produtos'
+        }
         try {
-            await axios.post('/api/deleteProduct', { id: id })
-            const getUpdated = await axios.get('/api/getProducts')
+            await axios.post('/api/deleteProduct', obj)
+            const getUpdated = await axios.post('/api/getProducts', {tipo: filtro})
             message.success('Produto removido com sucesso!')
-            setTableData(getUpdated.data)
+            setFilteredData(getUpdated.data)
             setDeleteLoadingData(false)
         } catch (e) {
             message.error('Ocorreu um erro ao remover o produto', e.message)
         }
+
     }
 
     const onChangeHandler = page => {
@@ -150,14 +163,13 @@ const TableContent = ({ dados, title, filtro}) => {
             key: 'nome',
             width: '25%',
             defaultSortOrder: 'ascend',
-            sorter: (a, b) => a.nome > b.nome ? 1 : -1
+            sorter: (a, b) => a.nome.localeCompare(b.nome)
         },
         {
             title: 'Preço',
             dataIndex: 'Preco',
             key: 'Preco',
             width: '25%',
-            defaultSortOrder: 'ascend',
             sorter: (a, b) => a.Preco - b.Preco
         },
         {
@@ -165,7 +177,7 @@ const TableContent = ({ dados, title, filtro}) => {
             dataIndex: 'image_url',
             key: 'image_url',
             width: '25%',
-            render: image => <Image src={image} layout="fixed" width={60} height={50} alt="" />
+            render: image => image ? <Image src={image} layout="fixed" width={60} height={50} alt="" /> : null
         },
         {
             title: 'Ações',
@@ -184,12 +196,12 @@ const TableContent = ({ dados, title, filtro}) => {
     ]
 
 
- 
+
 
     return (
         <Fragment>
 
-            <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding:'0 50px', marginTop:'50px' }}>
+            <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '0 50px', marginTop: '50px' }}>
                 <h2>Listagem de {title}</h2>
                 <Space size={30}>
                     <Search placeholder="Pesquisar..." onChange={onSearch} style={{ width: 200 }} />
@@ -210,7 +222,7 @@ const TableContent = ({ dados, title, filtro}) => {
                 rowKey={"_id"}
                 style={{ padding: '0 50px' }}
                 size="small"
-                pagination={{ 
+                pagination={{
                     defaultPageSize: 7,
                     onChange: onChangeHandler,
                     current
@@ -235,14 +247,14 @@ const TableContent = ({ dados, title, filtro}) => {
             <Modal visible={isCreateModalVisible} onOk={createNewProductHandler} onCancel={closeModal} title="Criar produto" okText="Criar" cancelText="Cancelar">
                 {loadingData && <Spin tip="A carregar dados..." style={{ display: 'block' }}></Spin>}
                 {!loadingData && <Form layout="vertical" form={form} >
-                    <Form.Item label="Nome" name="nome" rules={[{required:true,message:'Nome é um campo obrigatório'}]} id="nome">
-                        <Input placeholder="Nome do produto" name="nome" required />
+                    <Form.Item label="Nome" name="nome" rules={[{ required: true, message: 'Nome é um campo obrigatório' }]} id="nome">
+                        <Input name="nome" required />
                     </Form.Item>
-                    <Form.Item label="Preço"  name="preco" rules={[{required:true,message:'Preço é um campo obrigatório'}]} id="preco">
-                        <Input type="number" placeholder="Preço do produto" name="Preco"  min={0} required/>
+                    <Form.Item label="Preço" name="preco" rules={[{ required: true, message: 'Preço é um campo obrigatório' }]} id="preco">
+                        <Input type="number" name="Preco" min={0} required />
                     </Form.Item>
-                    <Form.Item label="Categoria do produto" name="categoria" id="categoria">
-                        <Select defaultValue="fruta">
+                    <Form.Item label="Categoria do produto" id="categoria" name="categoria" initialValue="fruta">
+                        <Select>
                             {categories.map(cat => <Select.Option key={cat} value={cat}>{cat}</Select.Option>)}
                         </Select>
                     </Form.Item>
@@ -251,12 +263,6 @@ const TableContent = ({ dados, title, filtro}) => {
                     </Upload>
                 </Form>}
             </Modal>
-
-            <pre>
-                 {JSON.stringify(selectedRowData, null, 2)} 
-               
-            </pre>
-
 
         </Fragment>
     )

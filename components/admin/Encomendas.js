@@ -6,8 +6,9 @@ import { SearchOutlined } from '@ant-design/icons';
 /* import locale from 'antd/es/date-picker/locale/pt_PT'; */
 import Invoice from '../Invoice';
 import Pdf from '../svg/Pdf'
-import {PDFDownloadLink} from '@react-pdf/renderer'
+import {PDFDownloadLink } from '@react-pdf/renderer'
 import {invoiceData} from '../../dummy-data/invoice'
+import Contagem from '../Contagem';
 
 const { Search } = Input;
 const { RangePicker } = DatePicker;
@@ -41,8 +42,11 @@ const Encomendas = ({ dados, title }) => {
    
 
     useEffect(() => {
+        const sortedData = dados.sort((a,b) => b.data.localeCompare(a.data))
+
+       
         setTableData(dados)
-        setFilteredData(dados)
+        setFilteredData(sortedData)
         setloading(false)
     }, [])
 
@@ -51,27 +55,24 @@ const Encomendas = ({ dados, title }) => {
             title: 'Nome',
             dataIndex: 'nome',
             key: 'nome',
-            width: '15%',
             defaultSortOrder: 'ascend',
         },
         {
             title: 'Morada',
             dataIndex: 'moradaFacturacao',
-            key: 'moradaFacturacao',
-            width: '35%',
+            key: 'moradaFacturacao'
+            
         },
         {
             title: 'Data',
             dataIndex: 'data',
-            key: 'data',
-            width: '15%',
-            sorter: (a, b) => new Date(a.data) - new Date(b.data)
+            key: 'data'
+            
         },
         {
             title: 'Estado',
             dataIndex: 'estado',
             key: 'estado',
-            width: '15%',
             render: estado => {
                 return (
                     <Select defaultValue={estado} style={{width:'140px'}}>
@@ -83,10 +84,16 @@ const Encomendas = ({ dados, title }) => {
             }
         },
         {
+            title: 'Total',
+            dataIndex: 'total',
+            key: 'total',
+            render: total => total+'€'
+        },
+        {
             title: 'Factura',
             dataIndex: 'numFactura',
-            key: 'numFactura',
-            width: '20%',
+            key: 'numFactura'
+       
         },
         {
             title: 'Download',
@@ -250,8 +257,8 @@ const Encomendas = ({ dados, title }) => {
             />
 
             
-             
-             {/* {pdfReady && <PDFDownloadLink document={<Invoice invoice={invoiceData} />}>Link</PDFDownloadLink>} */}
+            
+           {filteredData.length > 0 && <PDFDownloadLink document={<Contagem data={filteredData} />}>PDF test</PDFDownloadLink>}
 
 
         </Fragment>

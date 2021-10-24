@@ -4,13 +4,14 @@
 
 import 'antd/dist/antd.css';
 import { Menu, Layout, Button, Row, Spin } from 'antd';
-import { UnorderedListOutlined , UserOutlined, AuditOutlined, LogoutOutlined, BarChartOutlined } from '@ant-design/icons';
+import { UnorderedListOutlined , UserOutlined, AuditOutlined, LogoutOutlined, BarChartOutlined, ShoppingCartOutlined  } from '@ant-design/icons';
 import TableProdutos from '../../components/admin/TableProdutos';
 import dynamic from 'next/dynamic'
-import { dbConnect, getProdutos, getEncomendas } from '../../db-utils/db-connection';
+import { dbConnect, getProdutos, getEncomendas, getCabazes } from '../../db-utils/db-connection';
 import { useState } from 'react';
 import {getSession, signOut} from 'next-auth/client'
 import Dashboard from '../../components/admin/Dashboard';
+import TableCabazes from  '../../components/admin/TableCabazes'
 
 const { Header, Footer, Sider, Content } = Layout;
 const {SubMenu} = Menu
@@ -20,7 +21,7 @@ const Encomendas = dynamic(() => import('../../components/admin/Encomendas'), {l
     size="large" tip="A carregar encomendas..." style={{position:'absolute', top:'50%', left:'50%', transform:'translate(-50%,-50%)' }}></Spin>} )
 
 
-const Backoffice = ({produtos, encomendas}) => {
+const Backoffice = ({produtos, encomendas, cabazes}) => {
 
     
     const [filter, setFilter] = useState("")
@@ -45,6 +46,7 @@ const Backoffice = ({produtos, encomendas}) => {
             <Sider style={{paddingTop:'150px', background: '#fff'}}>
                 <Menu mode="inline" style={{}}>
                     <Menu.Item key="dashboard" icon={<BarChartOutlined />} onClick={() => toggleContent({content:'dashboard', key:"dashboard", title:'Dashboard'})}>Dashboard</Menu.Item>
+                    <Menu.Item key="cabazes" icon={<ShoppingCartOutlined />} onClick={() => toggleContent({content:'cabazes', key:"cabazes", title:'Cabazes'})}>Cabazes</Menu.Item>
                     <Menu.Item key="customers" icon={<UserOutlined />}>Lista de clientes</Menu.Item>
                     <SubMenu key="products" icon={<AuditOutlined />} title="Produtos">
                         <Menu.Item key="fruta" onClick={() => toggleContent({content:'produtos', key:'fruta', title:'frutas'})}>Frutas</Menu.Item>
@@ -65,6 +67,7 @@ const Backoffice = ({produtos, encomendas}) => {
                     {activeContent === 'produtos' && <TableProdutos dados={produtos} title={title} filtro={filter} />}
                     {activeContent === 'encomendas' && <Encomendas dados={JSON.parse(encomendas)} title={title} /> }
                     {activeContent === 'dashboard' && <Dashboard /> }
+                    {activeContent === 'cabazes' && <TableCabazes cabazes={cabazes} produtos={produtos} title="cabazes"/> }
                 </Content>
                 <Footer>Footer</Footer>
             </Layout>
@@ -90,16 +93,19 @@ export async function getServerSideProps(context) {
         }
     }
 
-    const client = await dbConnect()
+    let client = await dbConnect()
     const produtos = await getProdutos(client)
     const encomendas = await getEncomendas(client)
+    const cabazes = await getCabazes(client)
+   
     client.close()
-    
 
     return {
         props: {
             produtos: JSON.stringify(produtos),
-            encomendas: JSON.stringify(encomendas)
+            encomendas: JSON.stringify(encomendas),
+            cabazes: JSON.stringify(cabazes),
+
         }
     }
 }

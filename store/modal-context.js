@@ -1,7 +1,6 @@
 import { createContext, useState } from "react";
 
 const ModalContext = createContext({
-    userAuthenticated: false,
     openModal: () => {},
     closeModal: () => {}
 })

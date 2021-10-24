@@ -14,46 +14,63 @@ export default NextAuth({
 
                 if(credentials.userType === 'client') {
                     const usersCollection = client.db().collection('logins');
-                    const user = await usersCollection.findOne({userName: credentials.email})
+                    const userData = await usersCollection.findOne({email: credentials.email})
 
-                    if(!user) {
+                    if(!userData) {
                         client.close()
                         throw new Error('Utilizador não existe!');
                     }
-
-                    if(user.password !== credentials.password) {
+                    if(userData.password !== credentials.password) {
                         client.close()
                         throw new Error('A password está incorrecta!');
                     }
 
                     client.close()
-                        return {
-                            email: user.email,
-                            nome: user.nome
-                        }
+
+                    const user = {
+                        name: userData.name
+                    }
+                    
+                    return user
                 }
 
+              
                 const usersCollection = client.db().collection('users');
+                const userData = await usersCollection.findOne({name: credentials.nome})
 
-                const user = await usersCollection.findOne({name: credentials.nome})
+            
 
-                if(!user) {
+                if(!userData) {
                     client.close()
                     throw new Error('Utilizador não existe!');
                 }
 
-                if(user.password !== credentials.password) {
+                if(userData.password !== credentials.password) {
                     client.close()
                     throw new Error('A password está incorrecta!');
                 }
 
                 client.close()
-                return {
-                    email: user.email
+                const user = {
+                    name: userData.name
                 }
-   
+                return user
 
             }
         })
-    ]
+    ],
+    callbacks: {
+        jwt: async (token, user) => {
+            //  "user" parameter is the object received from "authorize"
+            //  "token" is being send below to "session" callback...
+            //  ...so we set "user" param of "token" to object from "authorize"...
+            //  ...and return it...
+            user && (token.user = user.name);
+            return token 
+        },
+        session: async (session, user) => {
+         
+            return session
+        }
+      }
 });

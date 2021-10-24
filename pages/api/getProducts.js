@@ -3,7 +3,7 @@ import { dbConnect, getProdutos } from "../../db-utils/db-connection"
 
 const handler = async (req, res) => {
 
-    const tipo = req.body.tipo
+    const tipo = req.body.tipo ? req.body.tipo : ""
 
     try {
         const client = await dbConnect()
